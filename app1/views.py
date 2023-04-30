@@ -4,11 +4,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
+from .models import Course
 import re
+from pcrm import settings
 
-# Create your views here.
 
 def homepage(request):
+    # If the user is not logged in
     if request.method == 'POST':
         Username = request.POST.get('Username')
         Password = request.POST.get('Password')
@@ -21,9 +23,12 @@ def homepage(request):
         else:
             messages.success(request, "Invalid Username or Password !")
             return redirect('homepage')
+    if request.method == 'GET':    
+        records = Course.objects.all()
+        return render(request, 'homepage.html', {'records': records})
     else:
         return render(request, 'homepage.html')
-    
+        
 def user_login(request):
     pass
 

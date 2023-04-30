@@ -5,9 +5,8 @@
 {% if user.is_authenticated %}
 <h1>Dashboard</h1>
 
-{% if records %}
 
-<div class="table-responsive table-striped " style="overflow-x: scroll;">
+{% if records %}
     <table class="table table-striped">
         <thead>
             <tr>
@@ -28,17 +27,15 @@
             <td>{{ i.course_code }}</td>
             <td>{{ i.instructor_name }}</td>
             <td>{{ i.course_tags }}</td>
-            <td><a href="{{ i.original_course_link }}" target="_blank"><button class="btn btn-info">@</button></a></td>
-            <td><a href="{{ i.download_link }}" target="_blank"><button class="btn btn-success">@</button></a></td>
+            <td>{{ i.original_course_link }}</td>
+            <td>{{ i.download_link }}</td>
             <td>{{ i.course_image }}</td>
             <td>{{ i.created_at }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-</div>
 {% endif %}
-
 
 {% else %}
 <h3>Login</h3>
