@@ -3,6 +3,8 @@ from django.shortcuts import render, redirect
 # django login logout modules
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.contrib.auth.models import User
+import re
 
 # Create your views here.
 
@@ -24,6 +26,63 @@ def homepage(request):
     
 def user_login(request):
     pass
+
+def user_register(request):
+    if request.method == 'POST':            
+        # Get data from request body
+        Email = request.POST.get('Email')
+        username = request.POST.get('Username')
+        password1 = request.POST.get('Password1')
+        password2 = request.POST.get('Password2')
+        
+        # Validate data
+        if not Email:
+            messages.success(request, "Email is required")
+            return redirect('register')        
+        if not username:
+            messages.success(request, "Username is required")
+            return redirect('register')
+        if not password1:
+            messages.success(request, "Password is required")
+            return redirect('register')
+        if not password2:
+            messages.success(request, "Password and confirm password are required")
+            return redirect('register')
+        
+        if password1 != password2:
+            messages.success(request, "Password and confirm password must be same")
+            return redirect('register')
+        
+        # validate form by usng regex pattern
+        regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(regex, Email):
+            messages.success(request, "Email is invalid")
+            return redirect('register')
+        
+        regex = r'^(?=.*[a-zA-Z])[a-zA-Z0-9_-]{3,}$'
+        if not re.match(regex, username):
+            messages.success(request, "username is invalid")
+            return redirect('register')
+        
+        regex = r'^[a-zA-Z0-9_\-@.*#?$&!%+={}\[\]~^()]{3,}$'
+        if not re.match(regex, password1):
+            messages.success(request, "Password is invalid")
+            return redirect('register')
+
+        # Check if username or email already exists
+        if User.objects.filter(username=username).exists():
+            messages.success(request, "Username already exists")
+            return redirect('register')
+        
+        new_user = User(username=username, email=Email)
+        # set the user's password
+        new_user.set_password(password1)
+        # save the user object to the database
+        new_user.save()
+        messages.success(request, "Account created successfully!")
+        return render(request, 'homepage.html')
+    else:
+        return render(request, 'register.html')    
 
 def user_logout(request):
     logout(request)

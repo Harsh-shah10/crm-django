@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3>Register Form</h3>
+<form method="POST" action="{% url 'register' %}">
+    {% csrf_token %}
+    <form>
+        <div class="mb-3">
+        <input type="text" class="form-control" name="Email", placeholder="Email" required>
+        </div>
+        <div class="mb-3">
+        <input type="text" class="form-control" name="Username", placeholder="Username" required>
+        </div>
+        <div class="mb-3">
+        <input type="text" class="form-control" name="Password1", placeholder="Password" required>
+        </div>
+        <div class="mb-3">
+        <input type="text" class="form-control" name="Password2", placeholder="Confirm-Password" required>
+        </div>
+        <button type="submit" class="btn btn-secondary">SignUp</button>
+    </form>
+</form>
+
+{% endblock content %}
