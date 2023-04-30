@@ -3,40 +3,57 @@
 {% block content %}
 
 {% if user.is_authenticated %}
-<h1>Dashboard</h1>
+<h4>Dashboard</h4>
 
 {% if records %}
 
-<div class="table-responsive table-striped " style="overflow-x: scroll;">
+<div class="table-responsive" style="font-size: 14px;">
     <table class="table table-striped">
         <thead>
             <tr>
-            <th scope="col">Course Name</th>
-            <th scope="col">Code</th>
-            <th scope="col">Instructor</th>
-            <th scope="col">Tag</th>
-            <th scope="col">Source</th>
-            <th scope="col">View</th>
-            <th scope="col">Cover Image</th>
-            <th scope="col">Created At</th>
+                <th class="col-md-1">Id</th>
+                <th class="col-md-2">Course Name</th>
+                <th class="col-md-2">Instructor</th>
+                <th class="col-md-1">Tag</th>
+                <th class="col-md-1">Source</th>
+                <th class="col-md-1">View</th>
+                <th class="col-md-2">Cover Image</th>
+                <th class="col-md-2">Created Time</th>
             </tr>
         </thead>
         <tbody>
-        {% for i in records %}
+            {% for i in records %}
             <tr>
-            <td>{{ i.course_name }}</td>
-            <td>{{ i.course_code }}</td>
-            <td>{{ i.instructor_name }}</td>
-            <td>{{ i.course_tags }}</td>
-            <td><a href="{{ i.original_course_link }}" target="_blank"><button class="btn btn-info">@</button></a></td>
-            <td><a href="{{ i.download_link }}" target="_blank"><button class="btn btn-success">@</button></a></td>
-            <td>{{ i.course_image }}</td>
-            <td>{{ i.created_at }}</td>
+                <td class="col-md-1">{{ i.id }}</td>
+                <td class="col-md-2">{{ i.course_name }}</td>
+                <td class="col-md-2">{{ i.instructor_name }}</td>
+                {% comment %} <td class="col-md-1">{{ i.course_tags }}</td> {% endcomment %}
+                <td class="col-md-1">
+                    {% for tag in i.course_tags.all %}
+                        {{ tag.name }}
+                    {% empty %}
+                        No tags
+                    {% endfor %}
+                </td>
+                <td class="col-md-1">
+                    <a href="{{ i.original_course_link }}" target="_blank">
+                        <button class="btn btn-light">src</button>
+                    </a>
+                </td>
+                <td class="col-md-1">
+                    <a href="{{ i.download_link }}" target="_blank">
+                        <button class="btn btn-link">link</button>
+                    </a>
+                </td>
+                <td class="col-md-2"><img src="/{{ i.course_image }}" width="200px"/></td>
+
+                <td class="col-md-2">{{ i.created_at }}</td>
             </tr>
-        {% endfor %}
+            {% endfor %}
         </tbody>
     </table>
 </div>
+
 {% endif %}
 
 

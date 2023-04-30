@@ -6,8 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from .models import Course
 import re
-from pcrm import settings
-
+from django.conf import settings
 
 def homepage(request):
     # If the user is not logged in
@@ -24,7 +23,7 @@ def homepage(request):
             messages.success(request, "Invalid Username or Password !")
             return redirect('homepage')
     if request.method == 'GET':    
-        records = Course.objects.all()
+        records = Course.objects.all().order_by('course_name')
         return render(request, 'homepage.html', {'records': records})
     else:
         return render(request, 'homepage.html')
@@ -39,7 +38,11 @@ def user_register(request):
         username = request.POST.get('Username')
         password1 = request.POST.get('Password1')
         password2 = request.POST.get('Password2')
+        secret = request.POST.get('secret')
         
+        if not secret:
+            messages.success(request, "Pass secret Identity")
+            return redirect('register')
         # Validate data
         if not Email:
             messages.success(request, "Email is required")
@@ -72,6 +75,10 @@ def user_register(request):
         regex = r'^[a-zA-Z0-9_\-@.*#?$&!%+={}\[\]~^()]{3,}$'
         if not re.match(regex, password1):
             messages.success(request, "Password is invalid")
+            return redirect('register')
+        
+        if settings.SECRET_PASS != secret:
+            messages.success(request, "Invalid secret key")
             return redirect('register')
 
         # Check if username or email already exists
